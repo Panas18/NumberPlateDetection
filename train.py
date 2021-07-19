@@ -3,7 +3,7 @@ Main file for training Yolo model on Pascal VOC dataset
 
 """
 
-import torch
+import torch 
 import torchvision.transforms as transforms
 import torch.optim as optim
 import torchvision.transforms.functional as FT
@@ -31,12 +31,13 @@ LEARNING_RATE = 2e-5
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 BATCH_SIZE = 15
 WEIGHT_DECAY = 0
-EPOCHS = 500 
+EPOCHS = 500
 NUM_WORKERS = 2
 PIN_MEMORY = True
-LOAD_MODEL = True 
+LOAD_MODEL = True
 LOAD_MODEL_FILE = "overfit.pth.tar"
-
+IMG_DIR = 'data/images'
+LABEL_DIR = 'data/labels'
 
 
 class Compose(object):
@@ -89,13 +90,6 @@ def main():
             img_dir=IMG_DIR,
             label_dir=LABEL_DIR,
             )
-
-    test_dataset = VOCDataset(
-            "data/test.csv", transform=transform,
-            img_dir=IMG_DIR,
-            label_dir=LABEL_DIR,
-            )
-
     train_loader = DataLoader(
             dataset=train_dataset,
             batch_size=BATCH_SIZE,
@@ -105,54 +99,26 @@ def main():
             drop_last=True,
             )
 
-    test_loader = DataLoader(
-            dataset=test_dataset,
-            batch_size=BATCH_SIZE,
-            num_workers=NUM_WORKERS,
-            pin_memory=PIN_MEMORY,
-            shuffle=True,
-            drop_last=True,
-            )
-
     for epoch in range(EPOCHS):
+        print(f"{epoch}/{EPOCHS}")
+        checkpoint = {
+                "state_dict": model.state_dict(),
+                "optimizer": optimizer.state_dict(),
+                }
+        if epoch % 50 == 0 and epoch != 0:
+            save_checkpoint(checkpoint, filename=LOAD_MODEL_FILE)
 
-        #pred_boxes, target_boxes = get_bboxes(
-        #        train_loader, model, iou_threshold=0.7, threshold=0.7
-        #        )
+        pred_boxes, target_boxes = get_bboxes(
+                train_loader, model, iou_threshold=0.5, threshold=0.5
+                )
 
-        #mean_avg_prec = mean_average_precision(
-        #        pred_boxes, target_boxes, iou_threshold=0.7, box_format="midpoint"
-        #        )
-        for x, y in test_loader:
-            x = x.to(DEVICE)
-            for idx in range(5):
-                bboxes = cellboxes_to_boxes(model(x))
-                bboxes = non_max_suppression(
-                        bboxes[idx], iou_threshold=0.5, threshold=0.4, box_format="midpoint")
-                plot_image(x[idx].permute(1, 2, 0).to("cpu"), bboxes)
+        mean_avg_prec = mean_average_precision(
+                pred_boxes, target_boxes, iou_threshold=0.5, box_format="midpoint"
+                )
 
-            import sys
-            sys.exit()
-
-#        if mean_avg_prec > 0.9:
-#            checkpoint = {
-#                "state_dict": model.state_dict(),
-#                "optimizer": optimizer.state_dict(),
-#            }
-#            save_checkpoint(checkpoint, filename=LOAD_MODEL_FILE)
-#            import time
-#            time.sleep(10)
-#
-
-        #train_fn(train_loader, model, optimizer, loss_fn)
-        #print(f"Train mAP: {mean_avg_prec}\n")
-
-    #checkpoint = {
-    #        "state_dict": model.state_dict(),
-    #        "optimizer": optimizer.state_dict(),
-    #        }
-    #save_checkpoint(checkpoint, filename=LOAD_MODEL_FILE)
+        train_fn(train_loader, model, optimizer, loss_fn)
+        print(f"Train mAP: {mean_avg_prec}\n")
 
 
 if __name__ == "__main__":
-    main()
+    main() 

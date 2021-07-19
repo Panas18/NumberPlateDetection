@@ -67,7 +67,6 @@ def non_max_suppression(bboxes, iou_threshold, threshold, box_format="corners"):
         list: bboxes after performing NMS given a specific IoU threshold
     """
 
-    print(type(bboxes))
     assert type(bboxes) == list
 
     bboxes = [box for box in bboxes if box[1] > threshold]

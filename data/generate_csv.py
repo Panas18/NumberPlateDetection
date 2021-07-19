@@ -1,7 +1,7 @@
 import os
 
 label_files = os.listdir('labels')
-train_files, test_files = label_files[:760], label_files[760:]
+train_files, test_files = label_files[:2450], label_files[2450:]
 
 for i in range(len(train_files)):
     train_pre, train_ext = os.path.splitext(train_files[i])
