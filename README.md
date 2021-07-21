@@ -12,6 +12,7 @@ This project aims to detect number plate of a vehicle in a image. This system is
 - Average Loss (mean square) : 0.92
 
 ### Images
-![](https://github.com/Panas18/VehiclesNumberPlateDetection/blob/main/result/image1.png)
-![](https://github.com/Panas18/VehiclesNumberPlateDetection/blob/main/result/image2.png)
-![](https://github.com/Panas18/VehiclesNumberPlateDetection/blob/main/result/image3.png)
+
+![Image 1](https://github.com/Panas18/NumberPlateDetection/blob/main/result/image1.png")</br>
+![Image 2](https://github.com/Panas18/NumberPlateDetection/blob/main/result/image2.png")</br>
+![Image 3](https://github.com/Panas18/NumberPlateDetection/blob/main/result/image3.png")
