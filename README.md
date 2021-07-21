@@ -13,6 +13,6 @@ This project aims to detect number plate of a vehicle in a image. This system is
 
 ### Images
 
-![Image 1](https://github.com/Panas18/NumberPlateDetection/blob/main/result/image1.png")</br>
-![Image 2](https://github.com/Panas18/NumberPlateDetection/blob/main/result/image2.png")</br>
-![Image 3](https://github.com/Panas18/NumberPlateDetection/blob/main/result/image3.png")
+![Image 1](https://github.com/Panas18/NumberPlateDetection/blob/main/result/image1.png)</br>
+![Image 2](https://github.com/Panas18/NumberPlateDetection/blob/main/result/image2.png)</br>
+![Image 3](https://github.com/Panas18/NumberPlateDetection/blob/main/result/image3.png)
