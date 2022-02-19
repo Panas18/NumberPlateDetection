@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import torch
+import numpy as np
 import torch.optim as optim
 from model import Yolov1
 from loss import YoloLoss
@@ -29,7 +30,7 @@ PIN_MEMORY = True
 transform = Compose([transforms.Resize((448, 448)), transforms.ToTensor(), ])
 
 
-def plot_image(image, bboxes):
+def plot_image(image, bboxes, loss):
     image = torch.reshape(image, (448, 448)).numpy()
     fig, ax = plt.subplots(1)
     ax.imshow(image, cmap='gray')
@@ -38,7 +39,8 @@ def plot_image(image, bboxes):
     else:
         for box in bboxes:
             prob, x, y, w, h = box[1], box[2], box[3], box[4], box[5]
-            prob = round(prob, 2)
+            loss = loss.detach().numpy()
+            loss = np.around(loss,2)
             xmin, ymin = x - w/2, y - h/2
             rect = patches.Rectangle(
                     (xmin * 448, ymin * 448),
@@ -47,9 +49,9 @@ def plot_image(image, bboxes):
                     linewidth=1,
                     edgecolor='r',
                     facecolor='none',
-                    label=str(prob)
+                    label=str(loss)
                     )
-            plt.text(xmin * 440, ymin * 440, str(prob), color='r')
+            plt.text(xmin * 440, ymin * 440, str(loss), color='r')
             ax.add_patch(rect)
         plt.show()
 
@@ -92,7 +94,7 @@ def main():
         bboxes = cellboxes_to_boxes(out)
         bboxes = non_max_suppression(bboxes[0], iou_threshold=0.5,
                 threshold=0.4, box_format='midpoint')
-        plot_image(x, bboxes)
+        plot_image(x, bboxes, loss)
     print(f"\nAverage Training Loss: {sum(avg_loss)/len(avg_loss)}")
     print(f"Test mAP : {mean_avg_prec}")
 
